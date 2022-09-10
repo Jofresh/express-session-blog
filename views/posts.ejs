@@ -1,0 +1,9 @@
+<h1>Posts</h1>
+<div class="posts">
+  <% posts?.length > 0 && posts.forEach(post => { %>
+  <div class="post-item">
+    <a href="/posts/<%= post._id %>"><%= post.title %></a>
+    <p><%= post.date %></p>
+  </div>
+  <% }) %>
+</div>

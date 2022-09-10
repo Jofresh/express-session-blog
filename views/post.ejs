@@ -1,0 +1,22 @@
+<h1><%= post.title %></h1>
+<p><%= post.text %></p>
+
+<div class="post__comments">
+  <% post.comments?.forEach(comment => { %>
+  <div class="comment-item">
+    <h3><%= comment.text %></h3>
+    <p><%= comment.date %></p>
+  </div>
+  <% }) %>
+</div>
+
+<form action="/posts/<%= post._id %>" method="POST">
+  <label for="comment">Commentaire</label>
+  <textarea
+    name="comment"
+    id="comment"
+    placeholder="Ajouter un commentaire..."
+    required
+  ></textarea>
+  <button type="submit">Commenter</button>
+</form>

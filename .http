@@ -1,0 +1,30 @@
+GET http://localhost:8080/posts/
+
+###
+
+# POST http://localhost:8080/posts/
+# Content-Type: application/json
+
+# {
+#   "title": "my title",
+#   "text": "eroijf efj eruif eiuhfer iufh "
+# }
+
+###
+POST http://localhost:8080/posts/631ce9fac4061c130ed82fd6
+Content-Type: application/json
+
+{
+  "comment": "comment 09 fezoijfze "
+}
+
+###
+GET http://localhost:8080/posts/631ce9fac4061c130ed82fd6
+Content-Type: application/json
+
+{
+  "comment": "comment 09 fezoijfze "
+}
+
+###
+GET http://localhost:8080/comments
