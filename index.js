@@ -161,3 +161,6 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+// Start session only where user logs in and not when makes any first HTTP request
+// Is it possible ?
