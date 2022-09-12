@@ -28,7 +28,7 @@ app.use(
       mongoUrl: MONGO_DB_URL,
     }),
     cookie: {
-      maxAge: 1000 * 60, // in milliseconds, 1 day = 1000 * 60 * 60 * 24
+      maxAge: 1000 * 60 * 10, // in milliseconds, 1 day = 1000 * 60 * 60 * 24
     },
   })
 );
@@ -68,7 +68,7 @@ app.get("/", isConnected, (req, res) => {
 });
 
 app.get("/login", isNotConnected, (req, res) => {
-  res.render("login", { title: "Login" });
+  res.render("login", { title: "Login", notlogged: true });
 });
 
 app.post("/login", isNotConnected, async (req, res) => {
@@ -79,6 +79,7 @@ app.post("/login", isNotConnected, async (req, res) => {
     return res.render("login", {
       title: "Login",
       error: "No user with that username.",
+      notlogged: true,
     });
   }
 
@@ -87,15 +88,23 @@ app.post("/login", isNotConnected, async (req, res) => {
       req.session.user = user;
       res.render("index", { title: "Home" });
     } else {
-      res.render("login", { title: "Login", error: "Wrong password." });
+      res.render("login", {
+        title: "Login",
+        error: "Wrong password.",
+        notlogged: true,
+      });
     }
   } catch {
-    res.render("login", { title: "Login", error: "Server error." });
+    res.render("login", {
+      title: "Login",
+      error: "Server error.",
+      notlogged: true,
+    });
   }
 });
 
 app.get("/register", isNotConnected, (req, res) => {
-  res.render("register", { title: "Register" });
+  res.render("register", { title: "Register", notlogged: true });
 });
 
 app.post("/register", isNotConnected, async (req, res) => {
@@ -107,12 +116,16 @@ app.post("/register", isNotConnected, async (req, res) => {
 
     res.redirect("/login");
   } catch {
-    res.render("register", { title: "Register", error: "Server error." });
+    res.render("register", {
+      title: "Register",
+      error: "Server error.",
+      notlogged: true,
+    });
   }
 });
 
 app.get("/posts", isConnected, async (req, res) => {
-  const posts = await Post.find();
+  const posts = await Post.find().populate("author");
   res.render("posts", { title: "Posts", posts });
 });
 
@@ -120,6 +133,7 @@ app.get("/posts", isConnected, async (req, res) => {
 app.post("/posts", isConnected, async (req, res) => {
   const { title, text } = req.body;
   const post = new Post({
+    author: req.session.user,
     title,
     text,
   });
@@ -128,7 +142,9 @@ app.post("/posts", isConnected, async (req, res) => {
 });
 
 app.get("/posts/:id", isConnected, async (req, res) => {
-  const post = await Post.findById(req.params.id).populate("comments");
+  const post = await Post.findById(req.params.id)
+    .populate("comments")
+    .populate("author");
   if (post == null) {
     //
   }
@@ -138,6 +154,7 @@ app.get("/posts/:id", isConnected, async (req, res) => {
 // TODO : add comment only if authenticated
 app.post("/posts/:id", isConnected, async (req, res) => {
   const comment = new Comment({
+    author: req.session.user,
     text: req.body.comment,
     post: req.params.id,
   });

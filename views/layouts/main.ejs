@@ -7,10 +7,9 @@
     <link rel="stylesheet" type="text/css" href="/style.css" />
   </head>
   <body>
-    <%- include("../partials/header.ejs") %>
-
+    <% if (locals.notlogged) { %> <%- body %> <% } else { %> <%-
+    include("../partials/header.ejs") %>
     <main><%- body %></main>
-
-    <%- include("../partials/footer.ejs") %>
+    <%- include("../partials/footer.ejs") %> <% } %>
   </body>
 </html>
